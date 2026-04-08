@@ -1,0 +1,16 @@
+name: email-triage-env
+version: 1.0
+
+actions:
+  - mark_important
+  - reply
+  - schedule
+  - ignore
+
+observation:
+  email_text: str
+  sender: str
+  urgency: float
+  step: int
+
+reward_range: [-10, 10]
