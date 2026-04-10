@@ -176,14 +176,7 @@ async def main():
 
      
 if __name__ == "__main__":
-    try:
-        while True:
-            asyncio.run(main())
-            user_input = input("Press ENTER to run again or type 'exit' to stop: ").strip().lower()
-            if user_input == "exit":
-                break
-    except KeyboardInterrupt:
-        pass       
+    asyncio.run(main())  
 
 # import time
 
