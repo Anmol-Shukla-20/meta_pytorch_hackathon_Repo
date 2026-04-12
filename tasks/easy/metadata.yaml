@@ -1,0 +1,5 @@
+id: easy
+name: Easy Email Triage
+description: Triage simple notification emails using AI classification.
+difficulty: easy
+grader: grader.evaluate

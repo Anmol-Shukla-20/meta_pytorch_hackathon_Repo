@@ -15,19 +15,11 @@ observation:
 
 reward_range: [-10, 10]
 
+# Root task mapping to explicit folders for deep validation
 tasks:
   - id: "easy"
-    name: "Easy Email Triage"
-    description: "Triage simple notification emails."
-    difficulty: "easy"
-    grader: "grader.evaluate"
+    path: "tasks/easy"
   - id: "medium"
-    name: "Medium Email Triage"
-    description: "Triage emails related to scheduling and appointments."
-    difficulty: "medium"
-    grader: "grader.evaluate"
+    path: "tasks/medium"
   - id: "hard"
-    name: "Hard Email Triage"
-    description: "Triage urgent emails and identify spam."
-    difficulty: "hard"
-    grader: "grader.evaluate"
+    path: "tasks/hard"

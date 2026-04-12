@@ -1,0 +1,5 @@
+id: medium
+name: Medium Email Triage
+description: Triage emails related to scheduling, appointments, and meeting requests.
+difficulty: medium
+grader: grader.evaluate

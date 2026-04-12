@@ -1,0 +1,5 @@
+id: hard
+name: Hard Email Triage
+description: Triage urgent emails, technical reports, and identify spam with high precision.
+difficulty: hard
+grader: grader.evaluate

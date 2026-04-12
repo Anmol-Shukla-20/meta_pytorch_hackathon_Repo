@@ -217,6 +217,7 @@ try:
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <meta name="google-site-verification" content="googlebcf113f3cc578b16" />
             <title>AI Email Inbox Agent</title>
             <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
             <script src="https://accounts.google.com/gsi/client" async defer></script>
@@ -286,7 +287,7 @@ try:
                 
                 .iframe-notice {
                     background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2);
-                    color: #f59e0b; padding: 15px; border-radius: 12px; font-size: 0.9rem;
+                    color: #f59e0b; padding: 15px; border-radius: 12px; font-size: 0.96rem;
                     margin-bottom: 25px; display: none; align-items: center; justify-content: space-between;
                 }
 
@@ -325,6 +326,11 @@ try:
             <div id="globalLoading">System Processing...</div>
 
             <div class="glass-card">
+                <div class="iframe-notice" id="iframeNotice">
+                    <span>⚠️ Google Login is blocked in iframes. Open the direct dashboard for full reliability.</span>
+                    <button onclick="window.open(window.location.href, '_blank')">🚀 Launch Full Dashboard</button>
+                </div>
+
                 <div class="status-badge">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <div class="pulse"></div> Environment Online
@@ -367,12 +373,19 @@ try:
                 const clientId = '{{GOOGLE_CLIENT_ID}}';
 
                 window.onload = function () {
+                    // Iframe detection
+                    if (window.self !== window.top) {
+                        document.getElementById('iframeNotice').style.display = 'flex';
+                    }
+
                     if(clientId) {
                         tokenClient = google.accounts.oauth2.initTokenClient({
                             client_id: clientId,
                             scope: 'https://www.googleapis.com/auth/gmail.readonly',
                             callback: (resp) => {
+                                if (resp.error !== undefined) throw (resp);
                                 accessToken = resp.access_token;
+                                document.getElementById('authBtn').innerHTML = '🔄 Syncing...';
                                 fetchGmail();
                             },
                         });
@@ -385,19 +398,52 @@ try:
                 async function analyzeManual() {
                     const text = document.getElementById('manualInput').value;
                     if(!text.trim()) return;
-                    showLoading("Analyzing...");
+                    showLoading("Analyzing Email...");
                     const res = await fetch('/api/analyze', {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
                         body: JSON.stringify({ email_text: text })
                     });
                     const data = await res.json();
-                    addEmailToColumn("Manual Test", text, data.action);
+                    addEmailToColumn("Manual Input", text, data.action);
                     hideLoading();
                 }
 
                 async function fetchGmail() {
-                    // Similar logic to inference.py
+                    showLoading("Scanning Gmail Inbox...");
+                    try {
+                        const res = await fetch('https://gmail.googleapis.com/gmail/v1/users/me/messages?q=is:unread&maxResults=10', {
+                            headers: { Authorization: `Bearer ${accessToken}` }
+                        });
+                        const data = await res.json();
+                        if(!data.messages || data.messages.length === 0) {
+                            hideLoading();
+                            document.getElementById('authBtn').innerHTML = '✅ Connected (No unread)';
+                            return;
+                        }
+
+                        for(const m of data.messages) {
+                            const mRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${m.id}`, {
+                                headers: { Authorization: `Bearer ${accessToken}` }
+                            });
+                            const mData = await mRes.json();
+                            let sub = mData.payload.headers.find(h => h.name === 'Subject')?.value || 'No Subject';
+                            let snip = mData.snippet;
+                            
+                            const valRes = await fetch('/api/analyze', {
+                                method: 'POST',
+                                headers: {'Content-Type': 'application/json'},
+                                body: JSON.stringify({ email_text: sub + " - " + snip })
+                            });
+                            const valData = await valRes.json();
+                            addEmailToColumn(sub, snip, valData.action);
+                        }
+                        document.getElementById('authBtn').innerHTML = '✅ Synchronization Complete';
+                    } catch(e) { 
+                        console.error(e);
+                        document.getElementById('authBtn').innerHTML = '❌ Connection Failed';
+                    }
+                    hideLoading();
                 }
 
                 function addEmailToColumn(subject, snippet, action) {
