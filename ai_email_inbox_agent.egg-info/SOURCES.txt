@@ -1,0 +1,7 @@
+README.md
+pyproject.toml
+ai_email_inbox_agent.egg-info/PKG-INFO
+ai_email_inbox_agent.egg-info/SOURCES.txt
+ai_email_inbox_agent.egg-info/dependency_links.txt
+ai_email_inbox_agent.egg-info/requires.txt
+ai_email_inbox_agent.egg-info/top_level.txt

@@ -14,3 +14,20 @@ observation:
   step: int
 
 reward_range: [-10, 10]
+
+tasks:
+  - id: "easy"
+    name: "Easy Email Triage"
+    description: "Triage simple notification emails."
+    difficulty: "easy"
+    grader: "grader.evaluate"
+  - id: "medium"
+    name: "Medium Email Triage"
+    description: "Triage emails related to scheduling and appointments."
+    difficulty: "medium"
+    grader: "grader.evaluate"
+  - id: "hard"
+    name: "Hard Email Triage"
+    description: "Triage urgent emails and identify spam."
+    difficulty: "hard"
+    grader: "grader.evaluate"

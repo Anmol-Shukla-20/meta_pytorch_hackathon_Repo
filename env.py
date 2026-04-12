@@ -4,7 +4,7 @@ from models import Observation
 class EmailEnv:
     def __init__(self, task="easy"):
         self.task = task
-        self.max_steps = 5
+        self.max_steps = 10
         self.current_step = 0
         self.data = self.load_data()
 

@@ -14,7 +14,10 @@ def evaluate(env):
         if done:
             break
 
-    return total_reward
+    # Normalize score to 0.0 - 1.0 range based on max 10 steps * 8 reward
+    return max(0.0, min(1.0, total_reward / 80.0))
+
+grade = evaluate
 
 
 def grade_all():
@@ -24,8 +27,8 @@ def grade_all():
         env = task_fn()
         score = evaluate(env)
 
-        # normalize to 0-10
-        score = max(0, min(10, score))
+        # normalize to 0.0-1.0
+        score = max(0.0, min(1.0, score))
         scores.append(score)
 
     return scores

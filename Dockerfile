@@ -11,5 +11,5 @@ COPY . .
 # Install python deps
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Run inference
-CMD ["python", "inference.py"]
+# Run server
+CMD ["python", "-m", "server.app"]

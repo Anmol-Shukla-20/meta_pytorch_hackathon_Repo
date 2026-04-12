@@ -1,0 +1,35 @@
+[project]
+name = "ai-email-inbox-agent"
+version = "0.1.0"
+description = "AI-powered email triage agent with Kanban dashboard"
+authors = [
+    { name = "Anmol Shukla", email = "shuklaanmol811@gmail.com" }
+]
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "openai",
+    "python-dotenv",
+    "google-auth-oauthlib",
+    "google-api-python-client",
+    "openenv-core>=0.2.0",
+]
+readme = "README.md"
+requires-python = ">= 3.11"
+
+[project.scripts]
+server = "server.app:main"
+
+[project.entry-points."openenv.tasks"]
+easy = "tasks.easy:run"
+medium = "tasks.medium:run"
+hard = "tasks.hard:run"
+
+[project.entry-points."openenv.graders"]
+easy = "grader:evaluate"
+medium = "grader:evaluate"
+hard = "grader:evaluate"
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

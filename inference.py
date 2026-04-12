@@ -2,6 +2,7 @@ import asyncio
 import os
 from typing import List, Optional
 from openai import OpenAI
+from fastapi.responses import HTMLResponse
 
 # 🔹 ENV HANDLING
 try:
@@ -36,7 +37,7 @@ except ImportError:
             correct = self.emails[self.idx][1]
             reward = 1.0 if action.message.lower() == correct else 0.0
             self.idx += 1
-            done = self.idx >= len(self.emails) or self.idx >= 8
+            done = self.idx >= len(self.emails) or self.idx >= 10
             next_text = self.emails[self.idx][0] if not done else "Done"
             
             class Obj:
@@ -61,7 +62,7 @@ TASK_NAME = os.getenv("MY_ENV_V4_TASK", "email_detection")
 BENCHMARK = os.getenv("MY_ENV_V4_BENCHMARK", "my_env_v4")
 IMAGE_NAME = os.getenv("IMAGE_NAME")
 
-MAX_STEPS = 8
+MAX_STEPS = 10
 
 # 🔹 LOGGING
 def log_start(task: str, env: str, model: str):
@@ -176,23 +177,10 @@ async def main():
 
      
 if __name__ == "__main__":
-    asyncio.run(main())  
+    try:
+        asyncio.run(main())
+    except Exception as e:
+        print(f"Inference error: {e}")
 
-# import time
 
-# if __name__ == "__main__":
-#     try:
-#         while True:
-#             asyncio.run(main())
-
-#             # ⏱ wait for few seconds
-#             time.sleep(3)
-
-#             user_input = input("Run again? (yes/no): ").strip().lower()
-
-#             if user_input != "yes":
-#                 break
-
-#     except KeyboardInterrupt:
-#         pass
 
